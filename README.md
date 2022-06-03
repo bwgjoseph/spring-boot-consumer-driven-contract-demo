@@ -97,11 +97,32 @@ Not quite sure why the need to explicitly indicate each `@State` although I thin
 
 ### Broker
 
+As mentioned earlier, without using `Broker`, we need to transfer the generated contract from the `Consumer` to `Provider` manually. However, with `Broker`, we can simply ask the `Consumer` to publish the `contracts` to `Broker`, and the `Provider` will read and verify the `contracts` from the `Broker`. This allows for even more seamless integration test and the `Broker` also has UI to view the result
+
 To startup the broker, navigate to root directory and run
 
 ```
 docker-compose up -d
 ```
+
+Access via http://localhost:9292
+
+#### Consumer
+
+- Add `id 'au.com.dius.pact' version '4.4.0-beta.2'` to `build.gradle > plugins`
+- Add `pack.broker` and `pack.publish` information - see `build.gradle`
+  - Note that some properties can be configured as [JVM System Properties](https://github.com/pact-foundation/pact-jvm/blob/master/provider/gradle/README.md#configured-as-jvm-system-properties) or [Environment Variables](https://github.com/pact-foundation/pact-jvm/blob/master/provider/gradle/README.md#configured-as-environment-variables)
+- Run `./gradlew build pactPublish`
+
+Once published, we can see that the `Contract` is listed in the `Broker`
+
+![pact-broker-1](/assets/pact-broker-1.png)
+
+Interestingly, we can also review the `contract` written by the `Consumer`
+
+![pact-broker-2](/assets/pact-broker-2.jpg)
+
+This allows us to manually verify the contract is written correctly as well
 
 ## Consideration
 

@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'au.com.dius.pact' version '4.4.0-beta.2'
 	id 'java'
 }
 
@@ -30,4 +31,18 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+pact {
+	broker {
+		pactBrokerUrl = 'http://localhost:9292'
+
+        pactBrokerUsername = 'pact'
+        pactBrokerPassword = 'pact'
+	}
+
+	publish {
+		// common use is to use git branch as the tag
+		tags = [project.pactBrokerTag]
+	}
 }
