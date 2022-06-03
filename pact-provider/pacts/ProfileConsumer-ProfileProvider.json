@@ -1,0 +1,209 @@
+{
+  "consumer": {
+    "name": "ProfileConsumer"
+  },
+  "interactions": [
+    {
+      "description": "get profile with id 1",
+      "providerStates": [
+        {
+          "name": "profiles 1 exists",
+          "params": {
+            "id": 1
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/profiles/1"
+      },
+      "response": {
+        "body": {
+          "age": 10,
+          "dob": "2000-01-31",
+          "email": "fake@gmail.com",
+          "id": 1,
+          "name": "fake"
+        },
+        "generators": {
+          "body": {
+            "$.dob": {
+              "format": "yyyy-MM-dd",
+              "type": "Date"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "matchingRules": {
+          "body": {
+            "$.age": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.dob": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "date": "yyyy-MM-dd",
+                  "match": "date"
+                }
+              ]
+            },
+            "$.email": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "get all profiles",
+      "providerStates": [
+        {
+          "name": "profiles exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/profiles"
+      },
+      "response": {
+        "body": [
+          {
+            "age": 10,
+            "dob": "2000-01-31",
+            "email": "fake@gmail.com",
+            "id": 1,
+            "name": "fake"
+          }
+        ],
+        "generators": {
+          "body": {
+            "$[*].dob": {
+              "format": "yyyy-MM-dd",
+              "type": "Date"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$[*].age": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$[*].dob": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "date": "yyyy-MM-dd",
+                  "match": "date"
+                }
+              ]
+            },
+            "$[*].email": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$[*].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$[*].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application/json(;\\s?charset=[\\w\\-]+)?"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-jvm": {
+      "version": "4.3.7"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "ProfileProvider"
+  }
+}
