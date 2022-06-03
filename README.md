@@ -95,6 +95,14 @@ As we are not using `Pact Broker/Server` at this stage, we have to manually copy
 
 Not quite sure why the need to explicitly indicate each `@State` although I think it doesn't have to but can't find the docs for it yet
 
+### Broker
+
+To startup the broker, navigate to root directory and run
+
+```
+docker-compose up -d
+```
+
 ## Consideration
 
 - Consumer Driven Contract [Pact] vs Provider Driven Contract [SCC]
