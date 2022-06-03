@@ -32,7 +32,40 @@ Navigate to the individual directory and run
 
 ### Consumer
 
-After consumer project is built, it will output the generated consumer contract to `/pact-consumer/build/pacts/` which can then be copied to provider project for test
+#### ProfileClientTests
+
+- Add `@ExtendWith(PactConsumerTestExt.class)` at class level
+  - For `JUnit 5` which replaces `PactRunner` in `JUnit 4`
+- Add `@PactTestFor` at class level
+  - This starts a `MockServer` for the consumer to run the test against which is why we have to set this `this.profileClient.setBaseUrl(mockServer.getUrl());` within the test to replace the actual URL with the `MockServer` one
+  - Define `providerName`
+    - When `Provider` run the test, it will specify `@Provider("ProfileProvider")` to match against `providerName`
+- Define the different interaction expectation
+  - For each different API interaction, define a `@Pact` method to represent the expected response
+  - At minimal, define the `consumer` parameter
+    - This will result in generating the expectation into a single contract per provider
+    - Contracts are generated based on unique `[Consumer]-[Provider].json` naming
+- For each `@Test`
+  - Specify `@PactTestFor(pactMethod = "getAllProfiles")` where `pactMethod` refers to the method annotated with `@Pact`
+  - This is so that it knows which method to retrieve the expected response from
+
+Need further understanding on what it means for [matching the interactions by provider name](https://docs.pact.io/implementation_guides/jvm/consumer/junit5#matching-the-interactions-by-provider-name) and [matching the interactions by method name](https://docs.pact.io/implementation_guides/jvm/consumer/junit5#matching-the-interactions-by-method-name)
+
+#### Generate
+
+Once the test are written, to generate the contract, run
+
+```
+./gradlew test
+```
+
+or
+
+```
+./gradlew build
+```
+
+Once completed, it will output the generated consumer contract to `/pact-consumer/build/pacts/` which can then be copied to provider project for verification
 
 ## Consideration
 

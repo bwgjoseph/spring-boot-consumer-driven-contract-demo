@@ -21,7 +21,7 @@ import au.com.dius.pact.core.model.annotations.Pact;
 
 @SpringBootTest
 @ExtendWith(PactConsumerTestExt.class)
-@PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3)
+@PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3, port = "9999")
 public class ProfileClientTests {
     @Autowired
     private ProfileClient profileClient;
@@ -48,7 +48,7 @@ public class ProfileClientTests {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getAllProfiles", port = "9999")
+    @PactTestFor(pactMethod = "getAllProfiles")
     void testGetAllProfiles(MockServer mockServer) {
         this.profileClient.setBaseUrl(mockServer.getUrl());
 
@@ -77,7 +77,7 @@ public class ProfileClientTests {
     }
 
     @Test
-    @PactTestFor(pactMethod = "getSingleProfile", port = "9999")
+    @PactTestFor(pactMethod = "getSingleProfile")
     void testGetSingleProfile(MockServer mockServer) {
         this.profileClient.setBaseUrl(mockServer.getUrl());
 
