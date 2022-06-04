@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'au.com.dius.pact' version '4.4.0-beta.2'
 	id 'java'
 }
 
@@ -26,9 +27,34 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'au.com.dius.pact.provider:junit5spring:4.3.7'
-
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+
+	// System.setProperty("pact.verifier.publishResults", "true");
+}
+
+pact {
+	broker {
+		pactBrokerUrl = 'http://localhost:9292'
+
+        pactBrokerUsername = 'pact'
+        pactBrokerPassword = 'pact'
+	}
+
+	serviceProviders {
+		ProfileProvider {
+
+			fromPactBroker {
+				selectors = latestTags('main')
+			}
+
+			providerTags = [project.pactBrokerTag]
+		}
+	}
+
+	reports {
+      defaultReports() // adds the standard console output
+    }
 }

@@ -124,6 +124,36 @@ Interestingly, we can also review the `contract` written by the `Consumer`
 
 This allows us to manually verify the contract is written correctly as well
 
+#### Provider
+
+- For `Provider` with `Spring`, we just need to provide some configuration and it will be able to read the `contracts` from the `Broker`
+- Navigate to `application.properties` and add
+```
+pactbroker.host: localhost
+pactbroker.port: 9292
+pactbroker.auth.username: pact
+pactbroker.auth.password: pact
+```
+- Switch out `@PactFolder` with `@PactBroker`
+  - It is also possible to configure host, auth, etc through `@PactBroker`
+
+Before we verify the result, we can take a look at the `Matrix` page
+
+![pack-broker-3](assets/pact-broker-3.png)
+
+- To verify and publish the result
+  - Add `pack.broker` and `pact.serviceProviders` in `build.gradle`
+  - Add `pact.verifier.publishResults=true` in `gradle.properties`
+  - Run `./gradlew build pactVerify`
+
+![pack-broker-4](assets/pact-broker-4.png)
+
+## Tips
+
+- Consider adding `@Tags` to `Pact` test suite and then configure `test` task to exclude `@Tags("pact")`
+  - This is so that the usual test won't run test tag with `pact`
+  - See [this](https://stackoverflow.com/questions/64322037/how-to-publish-pact-verification-result-to-pact-broker-in-gradle)
+
 ## Consideration
 
 - Consumer Driven Contract [Pact] vs Provider Driven Contract [SCC]
@@ -189,8 +219,10 @@ Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spri
   - To overcome this, we can change to `PactSpecVersion.V3` like such `@PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3)`
   - Seem like `PactSpecVersion.V4` is the default, and is incompatible with `V3`
 - When running the test via `VSCode` (manual click), `pact` generated contract will be output to `target/pact` even though using `gradle`. However, if running via command `./gradlew build`, there won't be such issue
+- Unable to publish verification result to broker after running `./gradlew pactVerify` command. Have reported the [issue](https://github.com/pact-foundation/pact-jvm/issues/1567). Awaiting for assistance.
 
 ## Reference:
 
 - [pact-workshop-Maven-Springboot-JUnit5](https://github.com/pact-foundation/pact-workshop-Maven-Springboot-JUnit5)
 - [contract-test-spring-cloud-contract-vs-pact](https://blog.devgenius.io/contract-test-spring-cloud-contract-vs-pact-420450f20429)
+- [pact-jvm-example](https://arxman.com/pact-jvm-example/)
