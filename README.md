@@ -1,16 +1,44 @@
-# Spring Boot Pact Demo
+# Spring Boot Consumer Driven Contract Demo
 
-This project is written to attempt to understand more about `Consumer Driven Contract` with the use of Spring Boot + [Pact](https://pact.io/)
+This project is written to attempt to understand more about `Consumer Driven Contract` with the use of Spring Boot + [Pact](https://pact.io/) / [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract)
+
+- [Spring Boot Consumer Driven Contract Demo](#spring-boot-consumer-driven-contract-demo)
+  - [Project](#project)
+    - [Run](#run)
+    - [Build](#build)
+  - [Pact CDC](#pact-cdc)
+    - [Consumer](#consumer)
+      - [ProfileClientTests](#profileclienttests)
+      - [Generate](#generate)
+    - [Provider](#provider)
+      - [PactProfileConsumerVerificationTest](#pactprofileconsumerverificationtest)
+    - [Broker](#broker)
+      - [Consumer](#consumer-1)
+      - [Provider](#provider-1)
+    - [Tips](#tips)
+    - [Known Issue](#known-issue)
+    - [Snippet](#snippet)
+      - [PactDslJsonBody](#pactdsljsonbody)
+      - [PactDslJsonArray](#pactdsljsonarray)
+  - [Spring Cloud Contract CDC](#spring-cloud-contract-cdc)
+    - [Provider](#provider-2)
+    - [Consumer](#consumer-2)
+  - [Consideration](#consideration)
+  - [Further exploration](#further-exploration)
+  - [Reference](#reference)
 
 ## Project
 
-This repository includes two sub-project;
+This repository includes four distinct sub-project;
 
 - [pact-consumer](./pact-consumer/)
 - [pact-provider](./pact-provider/)
   - Provides two API
     - GET /profiles
     - GET /profiles/{id}
+
+- [scc-provider](./scc-provider/)
+- [scc-consumer](./scc-consumer/)
 
 ### Run
 
@@ -28,7 +56,7 @@ Navigate to the individual directory and run
 ./gradlew [clean] build
 ```
 
-## Contract
+## Pact CDC
 
 ### Consumer
 
@@ -148,21 +176,24 @@ Before we verify the result, we can take a look at the `Matrix` page
 
 ![pack-broker-4](assets/pact-broker-4.png)
 
-## Tips
+### Tips
 
 - Consider adding `@Tags` to `Pact` test suite and then configure `test` task to exclude `@Tags("pact")`
   - This is so that the usual test won't run test tag with `pact`
   - See [this](https://stackoverflow.com/questions/64322037/how-to-publish-pact-verification-result-to-pact-broker-in-gradle)
 
-## Consideration
+### Known Issue
 
-- Consumer Driven Contract [Pact] vs Provider Driven Contract [SCC]
-- Ease of use
-- Learning curve / Overhead
+- Since `au.com.dius.pact.consumer:junit5:4.3.0` onwards, when running the test, it will throw error `java.lang.UnsupportedOperationException: Method getSingleProfile does not conform required method signature 'public au.com.dius.pact.core.model.V4Pact xxx(PactBuilder builder)'`
+  - See [test-report](issues/pact-4.3.0/test/index.html), most likely related to this [issue](https://github.com/pact-foundation/pact-jvm/issues/1488) and this [note](https://docs.pact.io/implementation_guides/jvm/upgrade-to-4.3.x)
+  - To overcome this, we can change to `PactSpecVersion.V3` like such `@PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3)`
+  - Seem like `PactSpecVersion.V4` is the default, and is incompatible with `V3`
+- When running the test via `VSCode` (manual click), `pact` generated contract will be output to `target/pact` even though using `gradle`. However, if running via command `./gradlew build`, there won't be such issue
+- Unable to publish verification result to broker after running `./gradlew pactVerify` command. Have reported the [issue](https://github.com/pact-foundation/pact-jvm/issues/1567). Awaiting for assistance.
 
-## Snippet
+### Snippet
 
-### PactDslJsonBody
+#### PactDslJsonBody
 
 ```java
 // {
@@ -187,7 +218,7 @@ new PactDslJsonBody()
     .closeArray()
 ```
 
-### PactDslJsonArray
+#### PactDslJsonArray
 
 ```java
 // [
@@ -208,21 +239,26 @@ PactDslJsonArray.arrayEachLike()
 .closeObject()
 ```
 
+## Spring Cloud Contract CDC
+
+### Provider
+
+### Consumer
+
+## Consideration
+
+- Consumer Driven Contract [Pact] vs Provider Driven Contract [SCC]
+- Ease of use
+- Learning curve / Overhead
+
 ## Further exploration
 
 Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract#overview) with [pact-broker](https://cloud.spring.io/spring-cloud-contract/reference/html/howto.html#how-to-use-pact-broker)
 
-## Known Issue
-
-- Since `au.com.dius.pact.consumer:junit5:4.3.0` onwards, when running the test, it will throw error `java.lang.UnsupportedOperationException: Method getSingleProfile does not conform required method signature 'public au.com.dius.pact.core.model.V4Pact xxx(PactBuilder builder)'`
-  - See [test-report](issues/pact-4.3.0/test/index.html), most likely related to this [issue](https://github.com/pact-foundation/pact-jvm/issues/1488) and this [note](https://docs.pact.io/implementation_guides/jvm/upgrade-to-4.3.x)
-  - To overcome this, we can change to `PactSpecVersion.V3` like such `@PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3)`
-  - Seem like `PactSpecVersion.V4` is the default, and is incompatible with `V3`
-- When running the test via `VSCode` (manual click), `pact` generated contract will be output to `target/pact` even though using `gradle`. However, if running via command `./gradlew build`, there won't be such issue
-- Unable to publish verification result to broker after running `./gradlew pactVerify` command. Have reported the [issue](https://github.com/pact-foundation/pact-jvm/issues/1567). Awaiting for assistance.
-
-## Reference:
+## Reference
 
 - [pact-workshop-Maven-Springboot-JUnit5](https://github.com/pact-foundation/pact-workshop-Maven-Springboot-JUnit5)
 - [contract-test-spring-cloud-contract-vs-pact](https://blog.devgenius.io/contract-test-spring-cloud-contract-vs-pact-420450f20429)
 - [pact-jvm-example](https://arxman.com/pact-jvm-example/)
+- [consumer-driven-contract-tests-lessons-learned](https://medium.com/kreuzwerker-gmbh/consumer-driven-contract-tests-lessons-learned-b4e1ac471d0c)
+- [okta-spring-cloud-contract](https://developer.okta.com/blog/2022/02/01/spring-cloud-contract)
