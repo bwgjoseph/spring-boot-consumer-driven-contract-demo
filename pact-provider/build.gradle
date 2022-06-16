@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'au.com.dius.pact' version '4.4.0-beta.2'
+	// id 'au.com.dius.pact' version '4.4.0-beta.2'
 	id 'java'
 }
 
@@ -32,29 +32,31 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 
-	// System.setProperty("pact.verifier.publishResults", "true");
+	if (project.hasProperty("publishResults")) {
+	    systemProperty "pact.verifier.publishResults", project.publishResults
+	}
 }
 
-pact {
-	broker {
-		pactBrokerUrl = 'http://localhost:9292'
+// pact {
+// 	broker {
+// 		pactBrokerUrl = 'http://localhost:9292'
 
-        pactBrokerUsername = 'pact'
-        pactBrokerPassword = 'pact'
-	}
+//         pactBrokerUsername = 'pact'
+//         pactBrokerPassword = 'pact'
+// 	}
 
-	serviceProviders {
-		ProfileProvider {
+// 	serviceProviders {
+// 		ProfileProvider {
 
-			fromPactBroker {
-				selectors = latestTags('main')
-			}
+// 			fromPactBroker {
+// 				selectors = latestTags('main')
+// 			}
 
-			providerTags = [project.pactBrokerTag]
-		}
-	}
+// 			providerTags = [project.pactBrokerTag]
+// 		}
+// 	}
 
-	reports {
-      defaultReports() // adds the standard console output
-    }
-}
+// 	reports {
+//       defaultReports() // adds the standard console output
+//     }
+// }

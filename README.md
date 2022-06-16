@@ -23,6 +23,7 @@ This project is written to attempt to understand more about `Consumer Driven Con
   - [Spring Cloud Contract CDC](#spring-cloud-contract-cdc)
     - [Provider](#provider-2)
     - [Consumer](#consumer-2)
+    - [Known Issue](#known-issue-1)
   - [Consideration](#consideration)
   - [Further exploration](#further-exploration)
   - [Reference](#reference)
@@ -155,6 +156,8 @@ This allows us to manually verify the contract is written correctly as well
 #### Provider
 
 - For `Provider` with `Spring`, we just need to provide some configuration and it will be able to read the `contracts` from the `Broker`
+- It is not necessary to bring in `au.com.dius.pact` gradle plugin as we can rely on `JUnit Test` to [publish the result](https://github.com/pact-foundation/pact-jvm/issues/1567#issuecomment-1157275733) via `property`
+  - `gradle plugin` in necessary if you wish to use `pactVerify` gradle command
 - Navigate to `application.properties` and add
 ```
 pactbroker.host: localhost
@@ -170,11 +173,24 @@ Before we verify the result, we can take a look at the `Matrix` page
 ![pack-broker-3](assets/pact-broker-3.png)
 
 - To verify and publish the result
-  - Add `pack.broker` and `pact.serviceProviders` in `build.gradle`
-  - Add `pact.verifier.publishResults=true` in `gradle.properties`
-  - Run `./gradlew build pactVerify`
+  - ~~Add `pack.broker` and `pact.serviceProviders` in `build.gradle`~~
+  - ~~Add `pact.verifier.publishResults=true` in `gradle.properties`~~
+  - ~~Run `./gradlew build pactVerify`~~
+  - Configure `test` task as such
+    ```groovy
+    tasks.named('test') {
+      useJUnitPlatform()
 
-![pack-broker-4](assets/pact-broker-4.png)
+      if (project.hasProperty("publishResults")) {
+          systemProperty "pact.verifier.publishResults", project.publishResults
+      }
+    }
+    ```
+  - Run `./gradlew clean test -PpublishResults=true`
+
+> The reason to set to `publishResults` is because for some reason either PowerShell or Gradle doesn't like `pact` as a property, and [stripped](https://github.com/pact-foundation/pact-jvm/issues/1567#issuecomment-1157269806) it off, hence, we pass in using `publishResults` which still get recognize as `pact.verifier.publishResults`
+
+![pack-broker-5](assets/pact-broker-5.jpg)
 
 ### Tips
 
@@ -189,7 +205,8 @@ Before we verify the result, we can take a look at the `Matrix` page
   - To overcome this, we can change to `PactSpecVersion.V3` like such `@PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3)`
   - Seem like `PactSpecVersion.V4` is the default, and is incompatible with `V3`
 - When running the test via `VSCode` (manual click), `pact` generated contract will be output to `target/pact` even though using `gradle`. However, if running via command `./gradlew build`, there won't be such issue
-- Unable to publish verification result to broker after running `./gradlew pactVerify` command. Have reported the [issue](https://github.com/pact-foundation/pact-jvm/issues/1567). Awaiting for assistance.
+- Unable to publish verification result to broker after running `./gradlew pactVerify` command. Have reported the [issue](https://github.com/pact-foundation/pact-jvm/issues/1567).
+  - Managed to get the result published after some help but still facing issue when using with `gradle plugin`
 
 ### Snippet
 
@@ -244,6 +261,10 @@ PactDslJsonArray.arrayEachLike()
 ### Provider
 
 ### Consumer
+
+### Known Issue
+
+- `start.spring.io` [wrongly generated](https://github.com/spring-cloud/spring-cloud-contract/issues/1795) `contracts` as `task` instead of `extension` for `gradle`
 
 ## Consideration
 
