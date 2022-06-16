@@ -28,6 +28,7 @@ This project is written to attempt to understand more about `Consumer Driven Con
     - [Developer Experience](#developer-experience)
       - [Documentation](#documentation)
       - [Tooling Support](#tooling-support)
+    - [Features](#features)
   - [Further exploration](#further-exploration)
   - [Reference](#reference)
 
@@ -283,6 +284,7 @@ contracts {
 
 ### Provider
 
+*** https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/gradle-project.html#gradle-add-stubs
 
 - Create the contract in `/test/resources/contracts/` which can be in `groovy, java, yaml, kotlin`
   - Choose `groovy` as it seem the most friendly out of all to write the contract in
@@ -327,6 +329,15 @@ As `SCC` also verify the actual value, which will trigger the actual method call
 
 ### Consumer
 
+Generate the project from [start.spring.io](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.7.0&packaging=jar&jvmVersion=17&groupId=com.bwgjoseph&artifactId=scc-consumer&name=scc-consumer&description=Spring%20Boot%20SCC%20Consumer&packageName=com.bwgjoseph.scc-consumer&dependencies=devtools,lombok,configuration-processor,web,cloud-contract-stub-runner)
+
+- Add `ProfileConsumerTests`
+  - Add `@AutoConfigureStubRunner(ids = "com.bwgjoseph:scc-provider:+:stubs:8100", stubsMode = StubsMode.LOCAL)`
+    - We configure the stub to run at `port 8100`
+    - and `StubsMode` to `LOCAL` so it will pull from local maven repository, instead of `REMOTE`
+
+That's actually all is required to run a the test against the `stub`
+
 ### Known Issue
 
 - `start.spring.io` [wrongly generated](https://github.com/spring-cloud/spring-cloud-contract/issues/1795) `contracts` as `task` instead of `extension` for `gradle`
@@ -350,6 +361,12 @@ As `SCC` also verify the actual value, which will trigger the actual method call
   - One example was when using `SCC`, in my contract, I did not enclose the `response.body.email` with quotes, but the error was pointing at `Line 5` of the `getAllProfiles.groovy` file which was the start of the contract and was able to know when I turn on `--debug` mode
 - To be fair, if I had chose to use `maven`, the experience should have been better
 
+### Features
+
+- In `Pact`, `consumer` writes what fields are required in the `contract` before submitting, and `provider` run against it
+- In `SCC`, `provider` provides the `stub` and `consumer` run against the `stub`, then verify if the fields they need are there
+- In `SCC`, it seem less straightforward to write contract against `Date`
+
 ## Further exploration
 
 Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract#overview) with [pact-broker](https://cloud.spring.io/spring-cloud-contract/reference/html/howto.html#how-to-use-pact-broker)
@@ -363,3 +380,4 @@ Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spri
 - [okta-spring-cloud-contract](https://developer.okta.com/blog/2022/02/01/spring-cloud-contract)
 - [scc-contract-dsl-http-top-level-elements](https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/project-features.html#contract-dsl-http-top-level-elements)
 - [gradle-springboot-mavenpublish-publication-only-contains-dependencies](https://stackoverflow.com/questions/61500897/gradle-springboot-mavenpublish-publication-only-contains-dependencies-and-or)
+- [continuous-integration-with-jenkins-artifactory-and-spring-cloud-contract](https://piotrminkowski.com/2018/07/04/continuous-integration-with-jenkins-artifactory-and-spring-cloud-contract/)
