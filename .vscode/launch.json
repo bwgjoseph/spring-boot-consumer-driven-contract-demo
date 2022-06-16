@@ -21,6 +21,16 @@
             "projectName": "pact-consumer",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SccProviderApplication<scc-provider>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.bwgjoseph.sccprovider.SccProviderApplication",
+            "projectName": "scc-provider",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

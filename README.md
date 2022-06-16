@@ -25,6 +25,9 @@ This project is written to attempt to understand more about `Consumer Driven Con
     - [Consumer](#consumer-2)
     - [Known Issue](#known-issue-1)
   - [Consideration](#consideration)
+    - [Developer Experience](#developer-experience)
+      - [Documentation](#documentation)
+      - [Tooling Support](#tooling-support)
   - [Further exploration](#further-exploration)
   - [Reference](#reference)
 
@@ -258,7 +261,69 @@ PactDslJsonArray.arrayEachLike()
 
 ## Spring Cloud Contract CDC
 
+If the project was generated via `start.spring.io`, note that the default configuration generated is wrong. See [#938](https://github.com/spring-io/start.spring.io/issues/938)
+
+Change from
+
+```groovy
+tasks.named("contracts") {
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
+}
+```
+
+to
+
+```groovy
+contracts {
+    testFramework = org.springframework.cloud.contract.verifier.config.TestFramework.JUNIT5
+    // add this to allow build when no contract is written yet
+    failOnNoContracts = false
+}
+```
+
 ### Provider
+
+
+- Create the contract in `/test/resources/contracts/` which can be in `groovy, java, yaml, kotlin`
+  - Choose `groovy` as it seem the most friendly out of all to write the contract in
+- Create Base class in `/test/java/com/bwgjoseph/sccprovider/contracts`.
+  - The base class and contract is used to define the testing behavior
+- Define the base class in `build.gradle` under `contracts` extension
+  - `baseClassForTests = 'com.bwgjoseph.sccprovider.contracts.ContractsBase'`
+- Run `./gradlew generateContractTests` to generate the contract
+  - By default, it will be invoked before `check` task
+- However, in order for `Consumer` to consume the `contract`, we need a way to publish the `stub` for consume to "consume".
+  - To do so, we will add [maven-publish](https://docs.gradle.org/current/userguide/publishing_maven.html) plugin
+    - We only publish to local `.m2/repository` but if there is a remote repository available, it can be published there as well. Publishing to local just makes our development easier
+  - Configure this
+    ```groovy
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                // Refer to https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#publishing-your-application.maven-publish
+                artifact bootJar
+                // See https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/gradle-project.html#gradle-publishing-stubs-to-artifact-repo
+                artifact verifierStubsJar
+            }
+        }
+    }
+    ```
+  - And run `./gradlew publishToMavenLocal`
+  - Once completed, you will be able to find a local copy of the app and stub in `%USERPROFILE%/.m2/repository` directory
+
+
+> Skipped testing for date, see [scc-localdatetime-assertions-fail](https://stackoverflow.com/questions/60550853/spring-cloud-contract-localdatetime-assertions-fail)
+
+```
+ContractVerifierTest > validate_getAllProfiles() FAILED
+    java.lang.IllegalStateException: Parsed JSON [[{"id":1,"name":"Joseph","age":22,"email":"jose@gmail.com","dob":[2000,1,1]}]] doesn't match the JSON path [$[?(@.['dob'] == '2000-1-1')]]
+        at com.toomuchcoding.jsonassert.JsonAsserter.check(JsonAsserter.java:228)
+        at com.toomuchcoding.jsonassert.JsonAsserter.checkBufferedJsonPathString(JsonAsserter.java:267)
+        at com.toomuchcoding.jsonassert.JsonAsserter.isEqualTo(JsonAsserter.java:101)
+        at com.bwgjoseph.sccprovider.contracts.ContractVerifierTest.validate_getAllProfiles(ContractVerifierTest.java:39)
+```
+
+As `SCC` also verify the actual value, which will trigger the actual method call to get the value, it will most likely mismatch and fail the test. So we have to `mock` the value via `Mockito`, and the easier way is to create a separate service to call from controller, so that we can mock that service return value more easily. Unlike `pact` where the actual value is less important(? to verify)
 
 ### Consumer
 
@@ -272,6 +337,19 @@ PactDslJsonArray.arrayEachLike()
 - Ease of use
 - Learning curve / Overhead
 
+### Developer Experience
+
+#### Documentation
+
+- Both libraries don't provide the best out-of-the-box experience to start as the documentation seem to jump all around, and are quite confusing (sometimes)
+
+#### Tooling Support
+
+- So far, I am using `gradle` to test in my demo, and online is lacking on the support for `gradle`. Most of the example are written using `maven`, and my attempt to use `gradle` has faced multiple issues.
+  - Especially when an error occurs, it wasn't quite clear of what exactly is happening. I have to enable `--info or --debug` to see what exactly is the issue
+  - One example was when using `SCC`, in my contract, I did not enclose the `response.body.email` with quotes, but the error was pointing at `Line 5` of the `getAllProfiles.groovy` file which was the start of the contract and was able to know when I turn on `--debug` mode
+- To be fair, if I had chose to use `maven`, the experience should have been better
+
 ## Further exploration
 
 Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract#overview) with [pact-broker](https://cloud.spring.io/spring-cloud-contract/reference/html/howto.html#how-to-use-pact-broker)
@@ -283,3 +361,5 @@ Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spri
 - [pact-jvm-example](https://arxman.com/pact-jvm-example/)
 - [consumer-driven-contract-tests-lessons-learned](https://medium.com/kreuzwerker-gmbh/consumer-driven-contract-tests-lessons-learned-b4e1ac471d0c)
 - [okta-spring-cloud-contract](https://developer.okta.com/blog/2022/02/01/spring-cloud-contract)
+- [scc-contract-dsl-http-top-level-elements](https://docs.spring.io/spring-cloud-contract/docs/current/reference/html/project-features.html#contract-dsl-http-top-level-elements)
+- [gradle-springboot-mavenpublish-publication-only-contains-dependencies](https://stackoverflow.com/questions/61500897/gradle-springboot-mavenpublish-publication-only-contains-dependencies-and-or)
