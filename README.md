@@ -3,6 +3,7 @@
 This project is written to attempt to understand more about `Consumer Driven Contract` with the use of Spring Boot + [Pact](https://pact.io/) / [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract)
 
 - [Spring Boot Consumer Driven Contract Demo](#spring-boot-consumer-driven-contract-demo)
+  - [Goal](#goal)
   - [Project](#project)
     - [Run](#run)
     - [Build](#build)
@@ -17,7 +18,19 @@ This project is written to attempt to understand more about `Consumer Driven Con
       - [Tooling Support](#tooling-support)
     - [Features](#features)
   - [Further exploration](#further-exploration)
+  - [Sample](#sample)
   - [Reference](#reference)
+
+## Goal
+
+- [x] Basic understanding and setup of Pact consumer / provider
+- [x] Basic understanding and setup of Pact server
+- [x] Basic understanding and setup of SCC provider / consumer
+- [x] HTTP contract test for Pact
+- [ ] Messaging contract test for Pact
+- [x] HTTP contract test for SCC
+- [ ] Messaging contract test for SCC
+- [ ] Using SCC with Pact Broker
 
 ## Project
 
@@ -108,6 +121,11 @@ Access via http://localhost:9292
 ## Further exploration
 
 Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract#overview) with [pact-broker](https://cloud.spring.io/spring-cloud-contract/reference/html/howto.html#how-to-use-pact-broker)
+Look into [scc-multiapi-converter](https://github.com/corunet/scc-multiapi-converter)
+
+## Sample
+
+- [spring-cloud-contract-sample](https://github.com/maliksalman/spring-cloud-contract-sample)
 
 ## Reference
 
@@ -120,3 +138,8 @@ Possibly look into using [Spring Cloud Contract](https://spring.io/projects/spri
 - [gradle-springboot-mavenpublish-publication-only-contains-dependencies](https://stackoverflow.com/questions/61500897/gradle-springboot-mavenpublish-publication-only-contains-dependencies-and-or)
 - [continuous-integration-with-jenkins-artifactory-and-spring-cloud-contract](https://piotrminkowski.com/2018/07/04/continuous-integration-with-jenkins-artifactory-and-spring-cloud-contract/)
 - [spring-cloud-contract](https://www.baeldung.com/spring-cloud-contract)
+- [pact-vs-spring-cloud-contract-tests](https://stackoverflow.com/questions/52033686/pact-vs-spring-cloud-contract-tests)
+- [introduction-to-consumer-driven-contract-testing](https://medium.com/kreuzwerker-gmbh/introduction-to-consumer-driven-contract-testing-3a130c8c2ea0)
+- [way-to-microservices-contract-testing-a-spring/pact-implemantation](https://www.kloia.com/blog/way-to-microservices-contract-testing-a-spring/pact-implemantation)
+- [consumer-driven-contract-testing](https://inspeerity.com/blog/consumer-driven-contract-testing)
+- [howto-consumer-driven-contracts-with-spring-cloud-contract](https://rieckpil.de/howto-consumer-driven-contracts-with-spring-cloud-contract/)
