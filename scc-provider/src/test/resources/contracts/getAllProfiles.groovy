@@ -15,35 +15,48 @@ Contract.make {
         headers {
             contentType applicationJson()
         }
-        // body '''
-        //     {
+        // Different ways to pass in body
+        // textblock style
+        // body '''\
         //         [
-        //             "id": 1,
-        //             "name": "Joseph",
-        //             "age": 22,
-        //             "email": jose@gmail.com,
-        //             "dob": "2000-01-01"
+        //             {
+        //                 "id": 1,
+        //                 "name": "Joseph",
+        //                 "age": 22,
+        //                 "email": jose@gmail.com,
+        //                 "dob": "2000-01-01"
+        //             },
+        //             {
+        //                 "id": 2,
+        //                 "name": "Sam",
+        //                 "age": 32,
+        //                 "email": sam@gmail.com,
+        //                 "dob": "2000-01-01"
+        //             }
         //         ]
-        //     }
-        // '''
-        body (
-            [
-                [
-                id: 1,
-                name: "Joseph",
-                age: 22,
-                email: "jose@gmail.com",
-                // dob: "2000-1-1"
-                ],
-                [
-                    id: 2,
-                    name: "Sam",
-                    age: 32,
-                    email: "sam@gmail.com",
-                    // dob: "2000-1-1"
-                ]
-            ]
+        //     '''
 
-        )
+        // array style
+        // body (
+        //     [
+        //         [
+        //             id: 1,
+        //             name: "Joseph",
+        //             age: 22,
+        //             email: "jose@gmail.com",
+        //             dob: "2000-01-01"
+        //         ],
+        //         [
+        //             id: 2,
+        //             name: "Sam",
+        //             age: 32,
+        //             email: "sam@gmail.com",
+        //             dob: "2000-01-01"
+        //         ]
+        //     ]
+        // )
+
+        // with a file
+        body(file("getAllProfiles_Response.json"))
     }
 }

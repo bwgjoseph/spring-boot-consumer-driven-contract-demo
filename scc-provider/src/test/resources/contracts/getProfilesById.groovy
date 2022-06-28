@@ -19,8 +19,9 @@ Contract.make {
             id: 1,
             name: "Joseph",
             age: 22,
-            email: "jose@gmail.com",
-            // dob: "2000-1-1"
+            // provides useful pre-defined regex
+            email: $(email()),
+            dob: $(anyDate())
         )
     }
 }

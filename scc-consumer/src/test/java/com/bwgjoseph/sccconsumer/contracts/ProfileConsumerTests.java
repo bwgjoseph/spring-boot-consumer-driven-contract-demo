@@ -18,6 +18,13 @@ import org.springframework.web.client.RestTemplate;
 import com.bwgjoseph.sccconsumer.Profile;
 
 @SpringBootTest
+/**
+ * Configure to fetch the stub from local .m2 repository, other option are CLASSPATH and REMOTE
+ *
+ * What this does is:
+ *  - Download stub
+ *  - Start Wiremock Server on port 8100
+ */
 @AutoConfigureStubRunner(ids = "com.bwgjoseph:scc-provider:+:stubs:8100", stubsMode = StubsMode.LOCAL)
 class ProfileConsumerTests {
 
