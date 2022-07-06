@@ -29,7 +29,7 @@ This project is written to attempt to understand more about `Consumer Driven Con
 - [x] HTTP contract test for Pact
 - [x] Messaging contract test for Pact
 - [x] HTTP contract test for SCC
-- [ ] Messaging contract test for SCC
+- [x] Messaging contract test for SCC
 - [ ] Using SCC with Pact Broker
 
 ## Project
