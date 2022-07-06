@@ -25,3 +25,12 @@ services:
       PACT_BROKER_DATABASE_PASSWORD: password
       PACT_BROKER_DATABASE_HOST: postgres
       PACT_BROKER_DATABASE_NAME: pact
+
+  rabbitmq:
+    image: rabbitmq:3.10.5-management
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password

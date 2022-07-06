@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch SccMessageProviderApplication",
+            "request": "launch",
+            "mainClass": "com.bwgjoseph.sccmessageprovider.SccMessageProviderApplication",
+            "projectName": "scc-message-provider"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-PactProviderApplication<pact-provider>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
