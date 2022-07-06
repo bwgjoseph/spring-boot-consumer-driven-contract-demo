@@ -27,7 +27,7 @@ This project is written to attempt to understand more about `Consumer Driven Con
 - [x] Basic understanding and setup of Pact server
 - [x] Basic understanding and setup of SCC provider / consumer
 - [x] HTTP contract test for Pact
-- [ ] Messaging contract test for Pact
+- [x] Messaging contract test for Pact
 - [x] HTTP contract test for SCC
 - [ ] Messaging contract test for SCC
 - [ ] Using SCC with Pact Broker
@@ -143,3 +143,7 @@ Look into [scc-multiapi-converter](https://github.com/corunet/scc-multiapi-conve
 - [way-to-microservices-contract-testing-a-spring/pact-implemantation](https://www.kloia.com/blog/way-to-microservices-contract-testing-a-spring/pact-implemantation)
 - [consumer-driven-contract-testing](https://inspeerity.com/blog/consumer-driven-contract-testing)
 - [howto-consumer-driven-contracts-with-spring-cloud-contract](https://rieckpil.de/howto-consumer-driven-contracts-with-spring-cloud-contract/)
+- [pact-jvm-demo](https://github.com/ythirion/pact-jvm-demo)
+- [pact examples](https://docs.pactflow.io/docs/examples/)
+- [event-driven-architecture-how-to-perform-contract-testing-in-kafka-pubsub](https://blog.testproject.io/2020/06/03/event-driven-architecture-how-to-perform-contract-testing-in-kafka-pubsub/)
+- [ContractTestingBoilerplate](https://github.com/SrinivasanTarget/ContractTestingBoilerplate)
