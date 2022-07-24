@@ -8,6 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Given a ProfileController that exposes two endpoint
+ *
+ * 1. getAllProfiles
+ * 2. getProfile
+ *
+ * Given the following, we have `pact-consumer` act as Client to consume these APIs
+ */
 @RestController
 public class ProfileController {
     private final List<Profile> profiles = List.of(

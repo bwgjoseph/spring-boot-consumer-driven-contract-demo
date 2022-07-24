@@ -20,22 +20,29 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 
 @SpringBootTest
+// 1. Provided by the library - au.com.dius.pact.consumer:junit5
 @ExtendWith(PactConsumerTestExt.class)
+// 2. Indicate the provider to run against, and other configuration
+// Reason to define the `port` is because underlying, it starts a `MockServer` for `RestTemplate` to run against
 @PactTestFor(providerName = "ProfileProvider", pactVersion = PactSpecVersion.V3, port = "9999")
 public class ProfileClientTests {
     @Autowired
     private ProfileClient profileClient;
 
+    // 3. This is the place where we define the contract
     @Pact(consumer = "ProfileConsumer")
     public RequestResponsePact getAllProfiles(PactDslWithProvider builder) {
+        new PactDslJsonArray();
         return builder
             .given("profiles exists")
                 .uponReceiving("get all profiles")
                 .path("/profiles")
+            // 4. Define the expected response
             .willRespondWith()
                 .status(200)
                 .body(
                     // https://docs.pact.io/implementation_guides/jvm/consumer#root-level-arrays-that-match-all-items
+                    // 5. We don't have to define all fields provided by Provider, only those we requires
                     PactDslJsonArray.arrayEachLike()
                         .integerType("id", 1)
                         .stringType("name", "fake")
@@ -47,13 +54,17 @@ public class ProfileClientTests {
             .toPact();
     }
 
+    // 6. Then we run the test against the `MockServer` (injected) setup by `Pact`
+    // note: the pactMethod refers to the `methodName` above
     @Test
     @PactTestFor(pactMethod = "getAllProfiles")
     void testGetAllProfiles(MockServer mockServer) {
         this.profileClient.setBaseUrl(mockServer.getUrl());
 
+        // 7. Call the API as usual
         List<Profile> profiles = this.profileClient.getAllProfiles();
 
+        // 8. Assert what you want to
         Assertions.assertThat(profiles.size()).isEqualTo(1);
     }
 

@@ -9,6 +9,10 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This class setup a `RestTemplate` defined in `WebConfig` to consume the API
+ * provided by the `Producer`
+ */
 @Service
 @RequiredArgsConstructor
 public class ProfileClient {

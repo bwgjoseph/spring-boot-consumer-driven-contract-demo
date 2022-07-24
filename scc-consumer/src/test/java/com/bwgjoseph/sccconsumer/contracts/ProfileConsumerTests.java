@@ -19,7 +19,7 @@ import com.bwgjoseph.sccconsumer.Profile;
 
 @SpringBootTest
 /**
- * Configure to fetch the stub from local .m2 repository, other option are CLASSPATH and REMOTE
+ * 1. Configure to fetch the stub from local .m2 repository, other option are CLASSPATH and REMOTE
  *
  * What this does is:
  *  - Download stub
@@ -28,9 +28,11 @@ import com.bwgjoseph.sccconsumer.Profile;
 @AutoConfigureStubRunner(ids = "com.bwgjoseph:scc-provider:+:stubs:8100", stubsMode = StubsMode.LOCAL)
 class ProfileConsumerTests {
 
+    // 2. Add test assertion
     @Test
     void testGetAllProfiles() {
         RestTemplate restTemplate = new RestTemplate();
+        // 3. This will test against the `WireMock` setup in the `stub`
         ResponseEntity<List<Profile>> profiles = restTemplate.exchange("http://localhost:8100/profiles", HttpMethod.GET, null, new ParameterizedTypeReference<List<Profile>>(){});
 
         assertThat(profiles.getStatusCode()).isEqualTo(HttpStatus.OK);

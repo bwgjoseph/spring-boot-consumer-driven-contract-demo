@@ -2,6 +2,8 @@ package contracts;
 
 import org.springframework.cloud.contract.spec.Contract
 
+// 1. Declare all different contract within this \contract package
+// running `generateContractTests` task will generate the various test method in `ContractVerifierTest`
 Contract.make {
     description "should return all profiles"
 

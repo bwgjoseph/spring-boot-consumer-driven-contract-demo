@@ -147,3 +147,4 @@ Look into [scc-multiapi-converter](https://github.com/corunet/scc-multiapi-conve
 - [pact examples](https://docs.pactflow.io/docs/examples/)
 - [event-driven-architecture-how-to-perform-contract-testing-in-kafka-pubsub](https://blog.testproject.io/2020/06/03/event-driven-architecture-how-to-perform-contract-testing-in-kafka-pubsub/)
 - [ContractTestingBoilerplate](https://github.com/SrinivasanTarget/ContractTestingBoilerplate)
+- [how-to-test-java-microservices-with-pact](https://blogs.oracle.com/javamagazine/post/how-to-test-java-microservices-with-pact)
